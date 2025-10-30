@@ -1,4 +1,4 @@
-![WhatsApp Image 2025-10-30 at 11 45 35_d1c7f6d3](https://github.com/user-attachments/assets/237e4491-4a45-41ef-8c74-dda5373709ee)# 💻 CodeLearn: The AI-Powered Visual DSA Platform
+# 💻 CodeLearn: The AI-Powered Visual DSA Platform
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Active Users](https://img.shields.io/badge/Active%20Users-1%2C250%2B-brightgreen)](https://github.com/your-repo/CodeLearn) 
