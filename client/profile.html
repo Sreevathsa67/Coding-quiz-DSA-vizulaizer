@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - CodeLearn</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-right: 1px solid rgba(100, 255, 218, 0.3);
+            backdrop-filter: blur(20px);
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 30px 30px;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #64ffda;
+        }
+
+        .sidebar-logo i {
+            font-size: 28px;
+            filter: drop-shadow(0 0 10px rgba(100, 255, 218, 0.5));
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 20px;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(100, 255, 218, 0.1);
+            color: #64ffda;
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active {
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            color: #0f0f23;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+            background: transparent;
+        }
+
+        /* Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(100, 255, 218, 0.3);
+        }
+
+        .header-left h1 {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            color: #0f0f23;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.3);
+        }
+
+        /* Profile Dashboard */
+        .profile-dashboard {
+            max-width: 1400px;
+        }
+
+        /* Profile Overview */
+        .profile-overview {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(100, 255, 218, 0.2);
+            border-color: rgba(100, 255, 218, 0.5);
+        }
+
+        .profile-avatar {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar i {
+            font-size: 80px;
+            color: #64ffda;
+            filter: drop-shadow(0 0 20px rgba(100, 255, 218, 0.5));
+        }
+
+        .avatar-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-badge i {
+            font-size: 16px;
+            color: #0f0f23;
+        }
+
+        .profile-info h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .profile-info p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 15px;
+        }
+
+        .user-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            color: #0f0f23;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .profile-stats-mini {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .profile-stats-mini span {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Stats Grid */
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .profile-stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(100, 255, 218, 0.2);
+            border-color: rgba(100, 255, 218, 0.5);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon i {
+            font-size: 24px;
+            color: #0f0f23;
+        }
+
+        .stat-content h3 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #64ffda;
+            margin-bottom: 5px;
+        }
+
+        .stat-content p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .stat-trend {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .stat-trend.positive {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .stat-trend.neutral {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        /* Content Grid */
+        .profile-content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(100, 255, 218, 0.2);
+            border-color: rgba(100, 255, 218, 0.5);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+        }
+
+        .card-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #64ffda;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-period-selector,
+        .view-all {
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            color: #64ffda;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .chart-period-selector:hover,
+        .view-all:hover {
+            background: rgba(100, 255, 218, 0.2);
+            border-color: rgba(100, 255, 218, 0.5);
+        }
+
+        .achievement-count {
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            color: #0f0f23;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        /* Skills Section */
+        .skills-detailed {
+            margin-top: 20px;
+        }
+
+        .skill-category {
+            margin-bottom: 30px;
+        }
+
+        .skill-category h4 {
+            color: #64ffda;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .skill-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .skill-name {
+            color: #ffffff;
+            font-weight: 500;
+            min-width: 120px;
+        }
+
+        .skill-progress-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .skill-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .skill-percentage {
+            color: #64ffda;
+            font-weight: 600;
+            font-size: 14px;
+            min-width: 40px;
+        }
+
+        /* Achievements */
+        .achievements-showcase {
+            margin-top: 20px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+
+        .achievement-item.earned {
+            border-color: rgba(100, 255, 218, 0.5);
+            background: rgba(100, 255, 218, 0.05);
+        }
+
+        .achievement-item.locked {
+            opacity: 0.6;
+        }
+
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .achievement-item.earned .achievement-icon {
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            color: #0f0f23;
+        }
+
+        .achievement-item.locked .achievement-icon {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .achievement-info h4 {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .achievement-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .achievement-date,
+        .achievement-progress {
+            font-size: 12px;
+            color: #64ffda;
+            font-weight: 500;
+        }
+
+        /* Submissions */
+        .submissions-list {
+            margin-top: 20px;
+        }
+
+        .submission-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .submission-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+
+        .submission-status {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .submission-status.success {
+            background: linear-gradient(45deg, #4caf50, #8bc34a);
+            color: white;
+        }
+
+        .submission-status.failed {
+            background: linear-gradient(45deg, #f44336, #ff5722);
+            color: white;
+        }
+
+        .submission-content {
+            flex: 1;
+        }
+
+        .submission-content h4 {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .submission-content p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .submission-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .submission-score .score {
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            color: #0f0f23;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Streak Calendar */
+        .streak-calendar {
+            margin-top: 20px;
+        }
+
+        .streak-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+        }
+
+        .current-streak,
+        .best-streak {
+            text-align: center;
+        }
+
+        .streak-number {
+            display: block;
+            font-size: 36px;
+            font-weight: 700;
+            color: #64ffda;
+            margin-bottom: 5px;
+        }
+
+        .streak-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .calendar-day.active {
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            color: #0f0f23;
+            font-weight: 600;
+        }
+
+        .calendar-day.today {
+            border: 2px solid #64ffda;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .profile-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .profile-content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .header-left h1 {
+                font-size: 28px;
+            }
+
+            .profile-stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-code"></i>
+                    <span>CodeLearn</span>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/dsa"><i class="fas fa-project-diagram"></i> DSA Learning</a></li>
+                <li><a href="/quiz"><i class="fas fa-code"></i> Coding Quiz</a></li>
+                <li><a href="/profile" class="active"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="header-left">
+                    <h1><i class="fas fa-user-circle"></i> My Profile</h1>
+                    <p>Track your progress and achievements</p>
+                </div>
+                <div class="header-right">
+                    <button class="btn-primary">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+
+            <!-- Profile Dashboard -->
+            <div class="profile-dashboard">
+                <!-- Top Section - Profile Overview -->
+                <div class="profile-overview">
+                    <!-- Profile Card -->
+                    <div class="profile-card">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                            <div class="avatar-badge">
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="profile-info">
+                            <h2 id="profileUsername">Username</h2>
+                            <p id="profileEmail">email@example.com</p>
+                            <span id="profileType" class="user-badge">Student</span>
+                            <div class="profile-stats-mini">
+                                <span><i class="fas fa-calendar"></i> Joined Jan 2024</span>
+                                <span><i class="fas fa-fire"></i> 7 day streak</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="profile-stats-grid">
+                        <div class="profile-stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="profileScore">1,250</h3>
+                                <p>Total Score</p>
+                                <span class="stat-trend positive">+125 this week</span>
+                            </div>
+                        </div>
+                        <div class="profile-stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="profileSolved">42</h3>
+                                <p>Problems Solved</p>
+                                <span class="stat-trend positive">+5 this week</span>
+                            </div>
+                        </div>
+                        <div class="profile-stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="profileSubmissions">89</h3>
+                                <p>Total Submissions</p>
+                                <span class="stat-trend neutral">47% success rate</span>
+                            </div>
+                        </div>
+                        <div class="profile-stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="profileTime">24h</h3>
+                                <p>Time Spent</p>
+                                <span class="stat-trend positive">+3h this week</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="profile-content-grid">
+                    <!-- Left Column -->
+                    <div class="profile-left">
+                        <!-- Progress Chart -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-chart-line"></i> Progress Over Time</h3>
+                                <select class="chart-period-selector">
+                                    <option value="week">Last 7 Days</option>
+                                    <option value="month">Last 30 Days</option>
+                                    <option value="year">Last Year</option>
+                                </select>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="progressChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Skills Breakdown -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-brain"></i> Skills Breakdown</h3>
+                            </div>
+                            <div class="skills-detailed">
+                                <div class="skill-category">
+                                    <h4>Data Structures</h4>
+                                    <div class="skill-items">
+                                        <div class="skill-item">
+                                            <span class="skill-name">Arrays</span>
+                                            <div class="skill-progress-container">
+                                                <div class="skill-bar">
+                                                    <div class="skill-progress" style="width: 85%"></div>
+                                                </div>
+                                                <span class="skill-percentage">85%</span>
+                                            </div>
+                                        </div>
+                                        <div class="skill-item">
+                                            <span class="skill-name">Linked Lists</span>
+                                            <div class="skill-progress-container">
+                                                <div class="skill-bar">
+                                                    <div class="skill-progress" style="width: 72%"></div>
+                                                </div>
+                                                <span class="skill-percentage">72%</span>
+                                            </div>
+                                        </div>
+                                        <div class="skill-item">
+                                            <span class="skill-name">Trees</span>
+                                            <div class="skill-progress-container">
+                                                <div class="skill-bar">
+                                                    <div class="skill-progress" style="width: 68%"></div>
+                                                </div>
+                                                <span class="skill-percentage">68%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="skill-category">
+                                    <h4>Algorithms</h4>
+                                    <div class="skill-items">
+                                        <div class="skill-item">
+                                            <span class="skill-name">Sorting</span>
+                                            <div class="skill-progress-container">
+                                                <div class="skill-bar">
+                                                    <div class="skill-progress" style="width: 90%"></div>
+                                                </div>
+                                                <span class="skill-percentage">90%</span>
+                                            </div>
+                                        </div>
+                                        <div class="skill-item">
+                                            <span class="skill-name">Dynamic Programming</span>
+                                            <div class="skill-progress-container">
+                                                <div class="skill-bar">
+                                                    <div class="skill-progress" style="width: 45%"></div>
+                                                </div>
+                                                <span class="skill-percentage">45%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="profile-right">
+                        <!-- Achievements -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-medal"></i> Achievements</h3>
+                                <span class="achievement-count">8/15 unlocked</span>
+                            </div>
+                            <div class="achievements-showcase">
+                                <div class="achievement-item earned">
+                                    <div class="achievement-icon">
+                                        <i class="fas fa-fire"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4>7-Day Streak</h4>
+                                        <p>Solved problems for 7 consecutive days</p>
+                                        <span class="achievement-date">Earned 2 days ago</span>
+                                    </div>
+                                </div>
+                                <div class="achievement-item earned">
+                                    <div class="achievement-icon">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4>First Solution</h4>
+                                        <p>Solved your first coding problem</p>
+                                        <span class="achievement-date">Earned 1 week ago</span>
+                                    </div>
+                                </div>
+                                <div class="achievement-item locked">
+                                    <div class="achievement-icon">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4>Speed Demon</h4>
+                                        <p>Solve 10 problems in 1 hour</p>
+                                        <span class="achievement-progress">Progress: 6/10</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Submissions -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-history"></i> Recent Submissions</h3>
+                                <a href="#" class="view-all">View All</a>
+                            </div>
+                            <div class="submissions-list" id="submissionsTableBody">
+                                <div class="submission-item">
+                                    <div class="submission-status success">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="submission-content">
+                                        <h4>Two Sum</h4>
+                                        <p>Solved in 2 attempts</p>
+                                        <span class="submission-time">2 hours ago</span>
+                                    </div>
+                                    <div class="submission-score">
+                                        <span class="score">100%</span>
+                                    </div>
+                                </div>
+                                <div class="submission-item">
+                                    <div class="submission-status failed">
+                                        <i class="fas fa-times"></i>
+                                    </div>
+                                    <div class="submission-content">
+                                        <h4>Binary Search</h4>
+                                        <p>Failed - 2/3 test cases</p>
+                                        <span class="submission-time">5 hours ago</span>
+                                    </div>
+                                    <div class="submission-score">
+                                        <span class="score">67%</span>
+                                    </div>
+                                </div>
+                                <div class="submission-item">
+                                    <div class="submission-status success">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="submission-content">
+                                        <h4>Reverse String</h4>
+                                        <p>Solved on first try</p>
+                                        <span class="submission-time">1 day ago</span>
+                                    </div>
+                                    <div class="submission-score">
+                                        <span class="score">100%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Learning Streak -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-calendar-check"></i> Learning Streak</h3>
+                            </div>
+                            <div class="streak-calendar">
+                                <div class="streak-info">
+                                    <div class="current-streak">
+                                        <span class="streak-number">7</span>
+                                        <span class="streak-label">Current Streak</span>
+                                    </div>
+                                    <div class="best-streak">
+                                        <span class="streak-number">12</span>
+                                        <span class="streak-label">Best Streak</span>
+                                    </div>
+                                </div>
+                                <div class="calendar-grid">
+                                    <!-- Calendar days will be generated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Chart initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize progress chart
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Problems Solved',
+                        data: [2, 1, 3, 2, 4, 1, 3],
+                        borderColor: '#64ffda',
+                        backgroundColor: 'rgba(100, 255, 218, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#64ffda',
+                        pointBorderColor: '#0f0f23',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Generate calendar grid
+            generateCalendar();
+
+            // Initialize logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    window.location.href = '/login';
+                }
+            });
+        });
+
+        function generateCalendar() {
+            const calendarGrid = document.querySelector('.calendar-grid');
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Clear existing calendar
+            calendarGrid.innerHTML = '';
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Add days of month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                // Mark today
+                if (day === today.getDate()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Mark active days (simulate streak)
+                if (day <= today.getDate() && day > today.getDate() - 7) {
+                    dayElement.classList.add('active');
+                }
+                
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        // Chart period selector functionality
+        document.querySelector('.chart-period-selector').addEventListener('change', function(e) {
+            // Here you would update the chart data based on the selected period
+            console.log('Chart period changed to:', e.target.value);
+        });
+
+        // Skill progress animations
+        function animateSkillBars() {
+            const skillBars = document.querySelectorAll('.skill-progress');
+            skillBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        }
+
+        // Animate skill bars when page loads
+        setTimeout(animateSkillBars, 1000);
+
+        // Add hover effects to cards
+        document.querySelectorAll('.dashboard-card, .profile-card, .profile-stat-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

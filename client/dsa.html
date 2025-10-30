@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Learning - CodeLearn</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1e1e3f 0%, #2a2a5a 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #64ffda;
+        }
+
+        .sidebar-logo i {
+            font-size: 28px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin: 5px 0;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 0 25px 25px 0;
+            margin-right: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-menu a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .sidebar-menu a:hover::before {
+            left: 100%;
+        }
+
+        .sidebar-menu a:hover {
+            color: #64ffda;
+            background: rgba(100, 255, 218, 0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active {
+            background: linear-gradient(90deg, #64ffda, #4fc3f7);
+            color: #0f0f23;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i {
+            font-size: 18px;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+        }
+
+        .content-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(100, 255, 218, 0.3);
+        }
+
+        .content-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dsa-container {
+            max-width: 1400px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Controls */
+        .dsa-controls {
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.1) 0%, rgba(79, 195, 247, 0.1) 100%);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #64ffda;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group select,
+        .control-group input {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .control-group select:focus,
+        .control-group input:focus {
+            outline: none;
+            border-color: #64ffda;
+            background: rgba(100, 255, 218, 0.1);
+            box-shadow: 0 0 20px rgba(100, 255, 218, 0.2);
+        }
+
+        .control-group select option {
+            background: #1a1a3e;
+            color: #ffffff;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #64ffda, #4fc3f7);
+            color: #0f0f23;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.3);
+        }
+
+        .btn-secondary {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #9c27b0, #e91e63);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(156, 39, 176, 0.3);
+        }
+
+        .btn-outline {
+            padding: 12px 20px;
+            background: transparent;
+            color: #64ffda;
+            border: 2px solid #64ffda;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-outline:hover {
+            background: #64ffda;
+            color: #0f0f23;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #f44336, #ff5722);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(244, 67, 54, 0.3);
+        }
+
+        /* Visualization Container */
+        .visualization-container {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(100, 255, 218, 0.1) 100%);
+            border: 1px solid rgba(156, 39, 176, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            min-height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visualization-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #9c27b0, #64ffda, #4fc3f7);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        #visualizationSVG {
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Operation Log */
+        .operation-log {
+            background: linear-gradient(135deg, rgba(79, 195, 247, 0.1) 0%, rgba(156, 39, 176, 0.1) 100%);
+            border: 1px solid rgba(79, 195, 247, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .operation-log h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #64ffda;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #logContainer {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #logContainer::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #logContainer::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        #logContainer::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #64ffda, #4fc3f7);
+            border-radius: 3px;
+        }
+
+        #logContainer p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .log-entry {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(100, 255, 218, 0.1);
+            border-left: 3px solid #64ffda;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar-logo span {
+                display: none;
+            }
+
+            .sidebar-menu a span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+                padding: 20px;
+            }
+
+            .content-header h1 {
+                font-size: 28px;
+            }
+
+            .dsa-controls {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .action-buttons {
+                grid-column: 1 / -1;
+                justify-content: center;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(100, 255, 218, 0.3);
+            border-radius: 50%;
+            border-top-color: #64ffda;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+            font-style: italic;
+        }
+
+        /* Animation styles for visualizations */
+        .node-enter {
+            animation: nodeEnter 0.5s ease-out forwards;
+        }
+
+        @keyframes nodeEnter {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .node-exit {
+            animation: nodeExit 0.5s ease-in forwards;
+        }
+
+        @keyframes nodeExit {
+            to {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+
+        .traverse-highlight {
+            animation: traverseHighlight 0.8s ease-in-out;
+        }
+
+        @keyframes traverseHighlight {
+            0%, 100% { 
+                fill: #64ffda !important; 
+            }
+            50% { 
+                fill: #ff6b6b !important; 
+            }
+        }
+
+        /* SVG specific styles */
+        .dsa-node {
+            transition: all 0.3s ease;
+        }
+
+        .dsa-node:hover {
+            transform: scale(1.1);
+        }
+
+        .dsa-link {
+            stroke-dasharray: 0;
+            animation: linkDraw 0.5s ease-out;
+        }
+
+        @keyframes linkDraw {
+            from {
+                stroke-dasharray: 1000;
+                stroke-dashoffset: 1000;
+            }
+            to {
+                stroke-dasharray: 0;
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-code"></i>
+                    <span>CodeLearn</span>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="/dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="/dsa" class="active"><i class="fas fa-project-diagram"></i> <span>DSA Learning</span></a></li>
+                <li><a href="/quiz"><i class="fas fa-code"></i> <span>Coding Quiz</span></a></li>
+                <li><a href="/profile"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h1><i class="fas fa-project-diagram" style="margin-right: 15px;"></i>Visual DSA Learning</h1>
+            </div>
+
+            <div class="dsa-container">
+                <div class="dsa-controls">
+                    <div class="control-group">
+                        <label for="dataStructure"><i class="fas fa-database"></i> Data Structure:</label>
+                        <select id="dataStructure">
+                            <option value="linkedlist">Linked List</option>
+                            <option value="stack">Stack</option>
+                            <option value="queue">Queue</option>
+                            <option value="graph">Graph</option>
+                        </select>
+                    </div>
+                                            
+                    <div class="control-group">
+                        <label for="nodeValue"><i class="fas fa-hashtag"></i> Value:</label>
+                        <input type="text" id="nodeValue" placeholder="Enter value">
+                    </div>
+                                            
+                    <div class="control-group">
+                        <label for="nodePosition"><i class="fas fa-map-marker-alt"></i> Position/Target:</label>
+                        <input type="text" id="nodePosition" placeholder="Position or target node">
+                    </div>
+                                            
+                    <div class="action-buttons">
+                        <button id="insertBtn" class="btn-primary">
+                            <i class="fas fa-plus"></i> Insert
+                        </button>
+                        <button id="deleteBtn" class="btn-secondary">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                        <button id="traverseBtn" class="btn-outline">
+                            <i class="fas fa-route"></i> Traverse
+                        </button>
+                        <button id="clearBtn" class="btn-danger">
+                            <i class="fas fa-broom"></i> Clear
+                        </button>
+                    </div>
+                </div>
+
+                <div class="visualization-container">
+                    <svg id="visualizationSVG" width="100%" height="400">
+                        <text x="50%" y="50%" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="18" font-style="italic">
+                            Select a data structure and perform operations to see the visualization
+                        </text>
+                    </svg>
+                </div>
+
+                <div class="operation-log">
+                    <h3><i class="fas fa-history"></i> Operation Log</h3>
+                    <div id="logContainer">
+                        <p>Select a data structure and perform operations to see the visualization.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        class DSAVisualizer {
+            constructor() {
+                this.svg = document.getElementById("visualizationSVG");
+                this.dataStructure = "linkedlist";
+                this.data = [];
+                this.graphNodes = new Map();
+                this.graphEdges = [];
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupSVG();
+                this.clearLog();
+                this.showInitialMessage();
+            }
+
+            showInitialMessage() {
+                this.svg.innerHTML = "";
+                this.setupSVG();
+
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", "50%");
+                text.setAttribute("y", "50%");
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("fill", "rgba(255,255,255,0.6)");
+                text.setAttribute("font-size", "18");
+                text.setAttribute("font-style", "italic");
+                text.textContent = "Select a data structure and perform operations to see the visualization";
+
+                this.svg.appendChild(text);
+            }
+
+            setupEventListeners() {
+                document.getElementById("dataStructure").addEventListener("change", (e) => {
+                    this.dataStructure = e.target.value;
+                    this.clear();
+                    this.addLogEntry(`Switched to ${this.dataStructure.charAt(0).toUpperCase() + this.dataStructure.slice(1)}`);
+                    this.updateUI();
+                });
+
+                document.getElementById("insertBtn").addEventListener("click", () => this.insert());
+                document.getElementById("deleteBtn").addEventListener("click", () => this.delete());
+                document.getElementById("traverseBtn").addEventListener("click", () => this.traverse());
+                document.getElementById("clearBtn").addEventListener("click", () => {
+                    if (confirm('Are you sure you want to clear all elements?')) {
+                        this.clear();
+                    }
+                });
+
+                // Logout functionality
+                document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to logout?')) {
+                        window.location.href = '/logout';
+                    }
+                });
+            }
+
+            updateUI() {
+                const positionInput = document.getElementById("nodePosition");
+                const positionLabel = positionInput.previousElementSibling;
+
+                if (this.dataStructure === "graph") {
+                    positionLabel.innerHTML = '<i class="fas fa-map-marker-alt"></i> Target Node:';
+                    positionInput.placeholder = "Target node for edge";
+                } else {
+                    positionLabel.innerHTML = '<i class="fas fa-map-marker-alt"></i> Position:';
+                    positionInput.placeholder = "Position (optional)";
+                }
+            }
+
+            setupSVG() {
+                // Create arrow marker for links
+                const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+                const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+                marker.setAttribute("id", "arrowhead");
+                marker.setAttribute("markerWidth", "10");
+                marker.setAttribute("markerHeight", "7");
+                marker.setAttribute("refX", "9");
+                marker.setAttribute("refY", "3.5");
+                marker.setAttribute("orient", "auto");
+
+                const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                polygon.setAttribute("points", "0 0, 10 3.5, 0 7");
+                polygon.setAttribute("fill", "#64ffda");
+
+                marker.appendChild(polygon);
+                defs.appendChild(marker);
+                this.svg.appendChild(defs);
+            }
+
+            insert() {
+                const value = document.getElementById("nodeValue").value;
+                const position = document.getElementById("nodePosition").value;
+
+                if (!value) {
+                    alert("Please enter a value");
+                    return;
+                }
+
+                switch (this.dataStructure) {
+                    case "linkedlist":
+                        this.insertLinkedList(value, position ? parseInt(position) : -1);
+                        break;
+                    case "stack":
+                        this.insertStack(value);
+                        break;
+                    case "queue":
+                        this.insertQueue(value);
+                        break;
+                    case "graph":
+                        this.insertGraphNode(value, position);
+                        break;
+                }
+
+                document.getElementById("nodeValue").value = "";
+                document.getElementById("nodePosition").value = "";
+            }
+
+            delete() {
+                const value = document.getElementById("nodeValue").value;
+                const position = document.getElementById("nodePosition").value;
+
+                switch (this.dataStructure) {
+                    case "linkedlist":
+                        this.deleteLinkedList(position ? parseInt(position) : 0);
+                        break;
+                    case "stack":
+                        this.deleteStack();
+                        break;
+                    case "queue":
+                        this.deleteQueue();
+                        break;
+                    case "graph":
+                        if (value) {
+                            this.deleteGraphNode(value);
+                        } else {
+                            alert("Please enter a node value to delete");
+                        }
+                        break;
+                }
+
+                document.getElementById("nodeValue").value = "";
+                document.getElementById("nodePosition").value = "";
+            }
+
+            traverse() {
+                switch (this.dataStructure) {
+                    case "linkedlist":
+                        this.traverseLinkedList();
+                        break;
+                    case "stack":
+                        this.traverseStack();
+                        break;
+                    case "queue":
+                        this.traverseQueue();
+                        break;
+                    case "graph":
+                        const startNode = document.getElementById("nodeValue").value;
+                        this.traverseGraph(startNode);
+                        break;
+                }
+            }
+
+            clear() {
+                this.data = [];
+                this.graphNodes.clear();
+                this.graphEdges = [];
+                this.showInitialMessage();
+                this.addLogEntry(`Clear operation: Cleared all elements from ${this.dataStructure}`);
+                document.getElementById('logContainer').innerHTML = '<p>Data structure cleared.</p>';
+            }
+
+            clearLog() {
+                document.getElementById('logContainer').innerHTML = '<p>Select a data structure and perform operations to see the visualization.</p>';
+            }
+
+            addLogEntry(message) {
+                const logContainer = document.getElementById('logContainer');
+                const entry = document.createElement('p');
+                entry.className = 'log-entry';
+                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                logContainer.prepend(entry);
+                if (logContainer.children.length > 10) {
+                    logContainer.removeChild(logContainer.lastChild);
+                }
+            }
+
+            showEmptyMessage(message) {
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", "50%");
+                text.setAttribute("y", "50%");
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("fill", "rgba(255,255,255,0.6)");
+                text.setAttribute("font-size", "16");
+                text.setAttribute("font-style", "italic");
+                text.textContent = message;
+
+                this.svg.appendChild(text);
+            }
+
+            highlightNodes(nodes) {
+                const svgNodes = this.svg.querySelectorAll('.dsa-node-circle');
+                svgNodes.forEach(node => {
+                    node.classList.remove('traverse-highlight');
+                });
+
+                if (nodes) {
+                    nodes.forEach((value, index) => {
+                        setTimeout(() => {
+                            const nodeElement = this.svg.querySelector(`#node-${index}`);
+                            if (nodeElement) {
+                                nodeElement.classList.add('traverse-highlight');
+                            }
+                        }, index * 800);
+                    });
+                }
+            }
+
+            // Linked List Operations
+            insertLinkedList(value, position) {
+                if (position === -1 || position >= this.data.length) {
+                    this.data.push(value);
+                    this.addLogEntry(`Insert operation: Added ${value} to linkedlist at end`);
+                } else {
+                    this.data.splice(position, 0, value);
+                    this.addLogEntry(`Insert operation: Added ${value} to linkedlist at position ${position}`);
+                }
+                this.renderLinkedList();
+            }
+
+            deleteLinkedList(position) {
+                if (this.data.length === 0) {
+                    this.addLogEntry("List is empty");
+                    return;
+                }
+
+                if (position >= this.data.length) {
+                    position = this.data.length - 1;
+                }
+
+                const deleted = this.data.splice(position, 1)[0];
+                this.addLogEntry(`Delete operation: Removed ${deleted} from linkedlist at position ${position}`);
+                this.renderLinkedList();
+            }
+
+            traverseLinkedList() {
+                if (this.data.length === 0) {
+                    this.addLogEntry("List is empty");
+                    return;
+                }
+
+                this.addLogEntry("Traverse operation: Traversing linkedlist");
+                this.addLogEntry("Traversing: " + this.data.join(" -> "));
+                this.highlightNodes(this.data);
+            }
+
+            renderLinkedList() {
+                this.svg.innerHTML = "";
+                this.setupSVG();
+
+                if (this.data.length === 0) {
+                    this.showEmptyMessage("Linked List is empty");
+                    return;
+                }
+
+                const nodeRadius = 30;
+                const nodeSpacing = 110;
+                const startX = 80;
+                const startY = 200;
+
+                this.data.forEach((value, index) => {
+                    const x = startX + index * nodeSpacing;
+
+                    // Create node circle
+                    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    circle.setAttribute("cx", x);
+                    circle.setAttribute("cy", startY);
+                    circle.setAttribute("r", nodeRadius);
+                    circle.setAttribute("fill", "#64ffda");
+                    circle.setAttribute("stroke", "#ffffff");
+                    circle.setAttribute("stroke-width", "3");
+                    circle.setAttribute("class", "dsa-node-circle dsa-node");
+                    circle.setAttribute("id", `node-${index}`);
+
+                    // Create node text
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", startY + 6);
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("fill", "#0f0f23");
+                    text.setAttribute("font-weight", "bold");
+                    text.setAttribute("font-size", "16");
+                    text.textContent = value;
+
+                    this.svg.appendChild(circle);
+                    this.svg.appendChild(text);
+
+                    // Create link to next node
+                    if (index < this.data.length - 1) {
+                        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                        line.setAttribute("x1", x + nodeRadius);
+                        line.setAttribute("y1", startY);
+                        line.setAttribute("x2", startX + (index + 1) * nodeSpacing - nodeRadius);
+                        line.setAttribute("y2", startY);
+                        line.setAttribute("stroke", "#64ffda");
+                        line.setAttribute("stroke-width", "3");
+                        line.setAttribute("marker-end", "url(#arrowhead)");
+                        line.setAttribute("class", "dsa-link");
+
+                        this.svg.appendChild(line);
+                    }
+
+                    // Add index labels
+                    const indexText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    indexText.setAttribute("x", x);
+                    indexText.setAttribute("y", startY - nodeRadius - 10);
+                    indexText.setAttribute("text-anchor", "middle");
+                    indexText.setAttribute("fill", "#64ffda");
+                    indexText.setAttribute("font-size", "12");
+                    indexText.setAttribute("font-weight", "bold");
+                    indexText.textContent = `[${index}]`;
+
+                    this.svg.appendChild(indexText);
+                });
+            }
+
+            // Stack Operations
+            insertStack(value) {
+                this.data.push(value);
+                this.addLogEntry(`Insert operation: Added ${value} to stack (Push)`);
+                this.renderStack();
+            }
+
+            deleteStack() {
+                if (this.data.length === 0) {
+                    this.addLogEntry("Stack is empty");
+                    return;
+                }
+
+                const popped = this.data.pop();
+                this.addLogEntry(`Delete operation: Removed ${popped} from stack (Pop)`);
+                this.renderStack();
+            }
+
+            traverseStack() {
+                if (this.data.length === 0) {
+                    this.addLogEntry("Stack is empty");
+                    return;
+                }
+
+                this.addLogEntry("Traverse operation: Traversing stack");
+                this.addLogEntry("Stack (top to bottom): " + this.data.slice().reverse().join(" | "));
+                this.highlightNodes(this.data);
+            }
+
+            renderStack() {
+                this.svg.innerHTML = "";
+                this.setupSVG();
+
+                if (this.data.length === 0) {
+                    this.showEmptyMessage("Stack is empty");
+                    return;
+                }
+
+                const nodeWidth = 100;
+                const nodeHeight = 50;
+                const startX = 250;
+                const startY = 50;
+
+                const reversedData = [...this.data].reverse();
+
+                reversedData.forEach((value, index) => {
+                    const y = startY + index * (nodeHeight + 8);
+
+                    // Create node rectangle
+                    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                    rect.setAttribute("x", startX - nodeWidth / 2);
+                    rect.setAttribute("y", y);
+                    rect.setAttribute("width", nodeWidth);
+                    rect.setAttribute("height", nodeHeight);
+                    rect.setAttribute("fill", "#64ffda");
+                    rect.setAttribute("stroke", "#ffffff");
+                    rect.setAttribute("stroke-width", "3");
+                    rect.setAttribute("class", "dsa-node-rect dsa-node");
+                    rect.setAttribute("id", `node-${index}`);
+
+                    // Create node text
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", startX);
+                    text.setAttribute("y", y + nodeHeight / 2 + 6);
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("fill", "#0f0f23");
+                    text.setAttribute("font-weight", "bold");
+                    text.setAttribute("font-size", "16");
+                    text.textContent = value;
+
+                    this.svg.appendChild(rect);
+                    this.svg.appendChild(text);
+
+                    if (index === 0) {
+                        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        label.setAttribute("x", startX + nodeWidth / 2 + 10);
+                        label.setAttribute("y", y + nodeHeight / 2 + 6);
+                        label.setAttribute("fill", "#64ffda");
+                        label.setAttribute("font-size", "14");
+                        label.setAttribute("font-weight", "bold");
+                        label.textContent = "Top";
+                        this.svg.appendChild(label);
+                    }
+                });
+            }
+
+            // Queue Operations
+            insertQueue(value) {
+                this.data.push(value);
+                this.addLogEntry(`Insert operation: Added ${value} to queue (Enqueue)`);
+                this.renderQueue();
+            }
+
+            deleteQueue() {
+                if (this.data.length === 0) {
+                    this.addLogEntry("Queue is empty");
+                    return;
+                }
+
+                const removed = this.data.shift();
+                this.addLogEntry(`Delete operation: Removed ${removed} from queue (Dequeue)`);
+                this.renderQueue();
+            }
+
+            traverseQueue() {
+                if (this.data.length === 0) {
+                    this.addLogEntry("Queue is empty");
+                    return;
+                }
+
+                this.addLogEntry("Traverse operation: Traversing queue");
+                this.addLogEntry("Queue (front to rear): " + this.data.join(" -> "));
+                this.highlightNodes(this.data);
+            }
+
+            renderQueue() {
+                this.svg.innerHTML = "";
+                this.setupSVG();
+
+                if (this.data.length === 0) {
+                    this.showEmptyMessage("Queue is empty");
+                    return;
+                }
+
+                const nodeRadius = 30;
+                const nodeSpacing = 110;
+                const startX = 80;
+                const startY = 200;
+
+                this.data.forEach((value, index) => {
+                    const x = startX + index * nodeSpacing;
+
+                    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    circle.setAttribute("cx", x);
+                    circle.setAttribute("cy", startY);
+                    circle.setAttribute("r", nodeRadius);
+                    circle.setAttribute("fill", "#64ffda");
+                    circle.setAttribute("stroke", "#ffffff");
+                    circle.setAttribute("stroke-width", "3");
+                    circle.setAttribute("class", "dsa-node-circle dsa-node");
+                    circle.setAttribute("id", `node-${index}`);
+
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", startY + 6);
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("fill", "#0f0f23");
+                    text.setAttribute("font-weight", "bold");
+                    text.setAttribute("font-size", "16");
+                    text.textContent = value;
+
+                    this.svg.appendChild(circle);
+                    this.svg.appendChild(text);
+
+                    if (index < this.data.length - 1) {
+                        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                        line.setAttribute("x1", x + nodeRadius);
+                        line.setAttribute("y1", startY);
+                        line.setAttribute("x2", startX + (index + 1) * nodeSpacing - nodeRadius);
+                        line.setAttribute("y2", startY);
+                        line.setAttribute("stroke", "#64ffda");
+                        line.setAttribute("stroke-width", "3");
+                        line.setAttribute("marker-end", "url(#arrowhead)");
+                        line.setAttribute("class", "dsa-link");
+                        this.svg.appendChild(line);
+                    }
+
+                    if (index === 0) {
+                        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        label.setAttribute("x", x);
+                        label.setAttribute("y", startY - nodeRadius - 10);
+                        label.setAttribute("text-anchor", "middle");
+                        label.setAttribute("fill", "#64ffda");
+                        label.setAttribute("font-size", "14");
+                        label.setAttribute("font-weight", "bold");
+                        label.textContent = "Front";
+                        this.svg.appendChild(label);
+                    }
+
+                    if (index === this.data.length - 1) {
+                        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        label.setAttribute("x", x);
+                        label.setAttribute("y", startY - nodeRadius - 10);
+                        label.setAttribute("text-anchor", "middle");
+                        label.setAttribute("fill", "#64ffda");
+                        label.setAttribute("font-size", "14");
+                        label.setAttribute("font-weight", "bold");
+                        label.textContent = "Rear";
+                        this.svg.appendChild(label);
+                    }
+                });
+            }
+
+            // Graph Operations
+            insertGraphNode(value, target) {
+                if (!this.graphNodes.has(value)) {
+                    const x = Math.random() * (this.svg.clientWidth - 100) + 50;
+                    const y = Math.random() * (this.svg.clientHeight - 100) + 50;
+                    this.graphNodes.set(value, { value, x, y, neighbors: new Set() });
+                    this.addLogEntry(`Insert operation: Added node ${value}`);
+                }
+
+                if (target) {
+                    if (this.graphNodes.has(value) && this.graphNodes.has(target)) {
+                        this.graphNodes.get(value).neighbors.add(target);
+                        this.graphEdges.push({ source: value, target: target });
+                        this.addLogEntry(`Insert operation: Added edge from ${value} to ${target}`);
+                    } else {
+                        this.addLogEntry(`Error: Could not add edge from ${value} to ${target}. One or both nodes do not exist.`);
+                    }
+                }
+                this.renderGraph();
+            }
+
+            deleteGraphNode(value) {
+                if (!this.graphNodes.has(value)) {
+                    this.addLogEntry(`Error: Node ${value} not found`);
+                    return;
+                }
+
+                // Remove node
+                this.graphNodes.delete(value);
+
+                // Remove all edges connected to the node
+                this.graphEdges = this.graphEdges.filter(edge => edge.source !== value && edge.target !== value);
+
+                // Remove the node from other nodes' neighbor lists
+                this.graphNodes.forEach(node => {
+                    node.neighbors.delete(value);
+                });
+
+                this.addLogEntry(`Delete operation: Removed node ${value} and all its edges`);
+                this.renderGraph();
+            }
+
+            async traverseGraph(startNode) {
+                if (!this.graphNodes.has(startNode)) {
+                    this.addLogEntry(`Error: Start node ${startNode} not found`);
+                    return;
+                }
+
+                this.addLogEntry(`Traverse operation: Starting BFS from node ${startNode}`);
+
+                const visited = new Set();
+                const queue = [startNode];
+                const traversalOrder = [];
+
+                while (queue.length > 0) {
+                    const currentNodeValue = queue.shift();
+                    if (!visited.has(currentNodeValue)) {
+                        visited.add(currentNodeValue);
+                        traversalOrder.push(currentNodeValue);
+
+                        // Highlight current node
+                        const nodeElement = this.svg.querySelector(`#node-${currentNodeValue}`);
+                        if(nodeElement) {
+                            nodeElement.classList.add('traverse-highlight');
+                        }
+
+                        // Pause for visualization
+                        await new Promise(resolve => setTimeout(resolve, 800));
+
+                        const currentNode = this.graphNodes.get(currentNodeValue);
+                        if (currentNode) {
+                            for (const neighbor of currentNode.neighbors) {
+                                if (!visited.has(neighbor)) {
+                                    queue.push(neighbor);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                this.addLogEntry(`BFS Traversal Order: ${traversalOrder.join(" -> ")}`);
+            }
+
+            renderGraph() {
+                this.svg.innerHTML = "";
+                this.setupSVG();
+
+                if (this.graphNodes.size === 0) {
+                    this.showEmptyMessage("Graph is empty. Add a node to start.");
+                    return;
+                }
+
+                const nodeRadius = 30;
+
+                // Render edges first
+                this.graphEdges.forEach(edge => {
+                    const sourceNode = this.graphNodes.get(edge.source);
+                    const targetNode = this.graphNodes.get(edge.target);
+                    if (sourceNode && targetNode) {
+                        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                        line.setAttribute("x1", sourceNode.x);
+                        line.setAttribute("y1", sourceNode.y);
+                        line.setAttribute("x2", targetNode.x);
+                        line.setAttribute("y2", targetNode.y);
+                        line.setAttribute("stroke", "#ffffff");
+                        line.setAttribute("stroke-width", "2");
+                        line.setAttribute("marker-end", "url(#arrowhead)");
+                        line.setAttribute("class", "dsa-link");
+                        this.svg.appendChild(line);
+                    }
+                });
+
+                // Render nodes
+                this.graphNodes.forEach(node => {
+                    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    group.setAttribute("class", "dsa-node-group");
+
+                    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    circle.setAttribute("cx", node.x);
+                    circle.setAttribute("cy", node.y);
+                    circle.setAttribute("r", nodeRadius);
+                    circle.setAttribute("fill", "#64ffda");
+                    circle.setAttribute("stroke", "#ffffff");
+                    circle.setAttribute("stroke-width", "3");
+                    circle.setAttribute("class", "dsa-node-circle dsa-node");
+                    circle.setAttribute("id", `node-${node.value}`);
+                    group.appendChild(circle);
+
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", node.x);
+                    text.setAttribute("y", node.y + 6);
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("fill", "#0f0f23");
+                    text.setAttribute("font-weight", "bold");
+                    text.setAttribute("font-size", "16");
+                    text.textContent = node.value;
+                    group.appendChild(text);
+
+                    this.svg.appendChild(group);
+                });
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            new DSAVisualizer();
+        });
+    </script>
+</body>
+</html>
