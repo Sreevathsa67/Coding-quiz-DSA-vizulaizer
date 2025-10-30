@@ -21,7 +21,9 @@
     * **Hard:** Tackle complex, interview-level questions (e.g., *Reverse Stacks Problem*, *Find Pair Sum in Stacks*).
 * **In-Browser IDE:** Solve problems directly on the platform with a built-in code editor, run code, and submit your solutions for immediate testing and feedback.
 <img width="1876" height="465" alt="image" src="https://github.com/user-attachments/assets/1b253f76-8570-4c0a-91c1-6c8a759bc3d3" />
-![WhatsApp Image 2025-10-30 at 11 46 08_8ee5bee6](https://github.com/user-attachments/assets/cae1754b-dcb9-4a92-8641-79162f33ec15)
+![WhatsApp Image 2025-10-30 at 11 46 08_aa3142b0](https://github.com/user-attachments/assets/4976a028-2d26-4701-a278-e2457deda721)
+
+
 
 <img width="1728" height="857" alt="image" src="https://github.com/user-attachments/assets/9416aae8-de31-4500-bb92-fa5af37149a1" />
 <img width="1878" height="854" alt="image" src="https://github.com/user-attachments/assets/0c20eff7-ddd4-4240-b927-0f91cd79ec6c" />
